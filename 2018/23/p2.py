@@ -9,31 +9,19 @@ with open('input.txt', 'r', encoding='utf-8') as file:
     for line in file.readlines():
         if match := pattern.match(line):
             bots_list.append((int(match['x']), int(match['y']), int(match['z']), int(match['r'])))
-bots = np.array(bots_list, dtype=np.int32)
+bots = np.array(bots_list)
 
+bots[:, 0] -= (delta_x := bots[:, 0].min())
+bots[:, 1] -= (delta_y := bots[:, 1].min())
+bots[:, 2] -= (delta_z := bots[:, 2].min())
+max_dim = bots[:, :-1].max()
+print(max_dim)
 max_intersections = 0
-max_intersection_points = []
-for bot in bots:
-    for i in range(bot[-1] + 1):
-        print('2nd loop')
-        xs = (bot[0] - i, bot[0] + i)
-        extra = bot[-1] - i
-        for j in range(extra):
-            ys = (bot[1] - j, bot[1] + j)
-            zs = (bot[2] - (extra - j), bot[2] + (extra - j))
-            for x in xs:
-                for y in ys:
-                    for z in zs:
-                        intersection_count = 0
-                        for comp_bot in bots:
-                            # 7 layers deep btw. Super efficient code :D
-                            if abs(x - comp_bot[0]) + abs(y - comp_bot[1]) + abs(z - comp_bot[2]) <= comp_bot[-1]:
-                                intersection_count += 1
-                        if intersection_count > max_intersections:
-                            max_intersections = intersection_count
-                            max_intersection_points = [(x, y, z)]
-                        elif intersection_count == max_intersections:
-                            max_intersection_points.append((x, y, z))
+max_intersection_points: list[tuple[int]] = []
 
-print(max_intersections)
-print(max_intersection_points)
+for i in range(0, max_dim, 2048):
+    x_indeces, y_indeces, z_indeces = np.indices((2048, 2048, 2048)) + i
+    for bot in bots:
+        # if bot[0]
+        # manhattan = abs(x_indeces - point[]).sum()
+        np.zeros((2048, 2048, 2048))
