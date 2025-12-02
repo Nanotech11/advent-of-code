@@ -1,1 +1,1 @@
-print(sum(1 for turn in [{'L': -1, 'R': 1}[line[0]]*int(line[1:]) for line in open('input.txt', 'r', encoding='utf-8').readlines()] for _ in range(abs(turn)) if (n := ((n if 'n' in globals() else 50) + max(-1, min(1, turn))) % 100) == 0))
+print(sum(1 for turn in [{'L': -1, 'R': 1}[line[0]]*int(line[1:]) for line in open('input.txt', 'r', encoding='utf-8')] for _ in range(abs(turn)) if (n := ((n if 'n' in globals() else 50) + max(-1, min(1, turn))) % 100) == 0))
