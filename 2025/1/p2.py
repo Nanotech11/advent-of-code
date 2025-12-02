@@ -5,7 +5,8 @@ count = 0
 current_value = 50
 for direction, amount in rotations:
     for i in range(amount):
-        if (current_value := (current_value + direction) % 100) == 0:
+        current_value = (current_value + direction) % 100
+        if current_value == 0:
             count += 1
 
 print(count)
