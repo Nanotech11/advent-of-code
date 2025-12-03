@@ -1,4 +1,3 @@
-# with open('input.txt', 'r', encoding='utf-8') as file:
-with open('test_input.txt', 'r', encoding='utf-8') as file:
-    for line in file.readlines():
+with open(('input.txt', 'test.txt')[1], 'r', encoding='utf-8') as file:
+    lines = [line.strip() for line in file]
 
