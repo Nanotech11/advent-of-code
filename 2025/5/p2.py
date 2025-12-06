@@ -12,15 +12,15 @@ ranges.append((max_end + 1, 0))
 n_fresh_ids = 0
 start = 0
 end = 0
-for range_pair in pairwise(ranges):
-    if range_pair[0][1] >= range_pair[1][0]:
-        end = max(end, range_pair[0][1], range_pair[1][1])
+for range_1, range_2 in pairwise(ranges):
+    if range_1[1] >= range_2[0]:
+        end = max(end, range_1[1], range_2[1])
         if not start:
-            start = range_pair[0][0]
+            start = range_1[0]
     elif start:
         n_fresh_ids += end - start + 1
         start = 0
     else:
-        n_fresh_ids += range_pair[0][1] - range_pair[0][0] + 1
+        n_fresh_ids += range_1[1] - range_1[0] + 1
 
 print(n_fresh_ids)
