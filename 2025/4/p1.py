@@ -9,7 +9,7 @@ for row_i in range(grid.shape[0]):
         if grid[row_i, col_i] == '.':
             continue
         mask = np.zeros(grid.shape)
-        mask[max(row_i-1, 0):min(row_i+2, grid.shape[0]), max(col_i-1, 0):min(col_i+2, grid.shape[1])] = 1
+        mask[max(row_i - 1, 0) : min(row_i + 2, grid.shape[0]), max(col_i - 1, 0) : min(col_i + 2, grid.shape[1])] = 1
         surrounding = (grid[mask == 1] == '@').sum()
         if surrounding <= 4:
             total += 1

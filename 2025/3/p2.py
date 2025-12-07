@@ -8,8 +8,8 @@ for line in lines:
     index = 0
     while remaining_chars > 1:
         for char in '9876543210':
-            if char in line[index:-(remaining_chars - 1)]:
-                index = line[index:-(remaining_chars - 1)].index(char) + 1 + index
+            if char in line[index : -(remaining_chars - 1)]:
+                index = line[index : -(remaining_chars - 1)].index(char) + 1 + index
                 str_num += char
                 remaining_chars -= 1
                 break

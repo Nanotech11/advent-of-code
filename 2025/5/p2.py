@@ -1,4 +1,5 @@
 from itertools import pairwise
+
 with open(('input.txt', 'test.txt')[0], 'r', encoding='utf-8') as file:
     ranges: list[tuple[int, int]] = []
     max_end = 0

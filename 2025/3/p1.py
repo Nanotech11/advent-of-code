@@ -9,7 +9,7 @@ for line in lines:
             str_num += char
             index = line.index(char)
             for char in '987654321':
-                if char in line[index + 1:]:
+                if char in line[index + 1 :]:
                     str_num += char
                     break
             break
