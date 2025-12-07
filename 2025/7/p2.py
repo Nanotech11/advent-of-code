@@ -3,9 +3,9 @@ from itertools import chain
 
 with open(('input.txt', 'test.txt')[0], 'r', encoding='utf-8') as file:
     splits = chain.from_iterable(
-        (idx for idx, char in enumerate(line.strip()) if char != '.')
+        (idx for idx, char in enumerate(line.rstrip()) if char != '.')
         for line in file
-        if any(char != '.' for char in line.strip())
+        if any(char != '.' for char in line.rstrip())
     )
 
     beams: dict[int, int] = defaultdict(lambda: 0)

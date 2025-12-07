@@ -1,11 +1,6 @@
 with open(('input.txt', 'test.txt')[0], 'r', encoding='utf-8') as file:
-    ranges: list[tuple[int, int]] = []
-    while (line := file.readline().strip()) != '':
-        s, e = line.split('-')
-        ranges.append((int(s), int(e)))
-    ingredients = [int(line) for line in file.readlines()]
-ranges.sort()
-ingredients.sort()
+    ranges = sorted(((int(s), int(e)) for s, e in (line.split('-') for line in iter(file.readline, '\n'))))
+    ingredients = sorted((int(line) for line in file))
 
 n_fresh = 0
 idx = 0
