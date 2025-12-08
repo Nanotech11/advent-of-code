@@ -1,0 +1,1 @@
+## WARNING: This will contain spointers for solutions to Advent of Code. Look elsewhere for non-spoiler hints and writeups.

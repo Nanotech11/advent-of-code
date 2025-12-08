@@ -4,7 +4,7 @@ import numpy as np
 
 bots_list: list[tuple[int, int, int, int]] = []
 pattern = re.compile(r"^pos=<(?P<x>-?\d+),(?P<y>-?\d+),(?P<z>-?\d+)>,\sr=(?P<r>\d+)$")
-with open("input.txt", "r", encoding="utf-8") as file:
+with open(('input.txt', 'test1.txt')[0], 'r', encoding='utf-8') as file:
     for line in file.readlines():
         if match := pattern.match(line):
             bots_list.append((int(match['x']), int(match['y']), int(match['z']), int(match['r'])))
