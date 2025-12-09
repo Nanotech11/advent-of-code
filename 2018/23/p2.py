@@ -1,18 +1,7 @@
 import re
 from collections import defaultdict
-from collections.abc import Generator
-from functools import cache
 from itertools import combinations, product, takewhile
 from operator import itemgetter
-
-
-@cache
-def get_perimeter_points(radius: int) -> Generator[tuple[int, int, int]]:
-    for xd in range(radius + 1):
-        extra = radius - xd
-        for yd in range(extra + 1):
-            zd = radius - xd - yd
-            yield (xd, yd, zd)
 
 
 with open(('input.txt', 'test2.txt')[0], 'r', encoding='utf-8') as file:
@@ -38,15 +27,24 @@ for bot1, bot2 in combinations(bots, 2):
 n_intersect_bots = dict(sorted(n_intersect_bots_dict.items(), key=itemgetter(1), reverse=True))
 
 max_intersections = 0
+max_points: set[tuple]  = set()
 for bot1 in takewhile(lambda x: n_intersect_bots_dict[x] >= max_intersections, n_intersect_bots):
     x, y, z, r = bot1
-    perimeter_points = (
-        point
-        for point in product(range(r + 1), repeat=3)
-        if x_min <= point[0] <= x_max and y_min <= point[1] <= y_max and z_min <= point[2] <= z_max and sum(point) == r
-    )
+    for xd in reversed(range(r + 1)):
+        x_extra = r - xd
+        for yd in range(x_extra + 1):
+            zd = r - xd - yd
+            for point in set(product((x + xd, x - xd), (y + yd, y - yd), (z + zd, z - zd))):
+                n_intersections = 0
+                for bot2 in n_intersect_bots:
+                    if (abs(point[0] - bot2[0]) + abs(point[1] - bot2[1]) + abs(point[2] - bot2[2])) <= bot2[3]:
+                        n_intersections += 1
+                if n_intersections > max_intersections:
+                    max_intersections = n_intersections
+                    max_points.clear()
+                    max_points.add(point)
+                elif n_intersections == max_intersections:
+                    max_points.add(point)
 
-    for point in perimeter_points:
-        print(point)
-        # for bot2 in bots:
-        #     if
+print(max_intersections)
+print(max_points)
