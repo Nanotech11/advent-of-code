@@ -1,21 +1,22 @@
 import re
-from collections import deque, defaultdict
-from itertools import repeat
+from collections import deque
 
-with open(('input.txt', 'test.txt')[1], 'r', encoding='utf-8') as file:
-    goal_pattern = re.compile(r'^\[([\.#]+)\]')
+with open(('input.txt', 'test.txt')[0], 'r', encoding='utf-8') as file:
+    light_pattern = re.compile(r'^\[([\.#]+)\]')
     button_pattern = re.compile(r'\(([\d,]+)\)')
     machines = []
     for line in file:
-        goal = tuple({'.': False, '#': True}[char] for char in re.findall(goal_pattern, line)[0])
-        buttons = tuple(tuple(int(button) for button in schematic.split(',')) for schematic in re.findall(button_pattern, line))
-        machines.append((goal, buttons))
+        lights = int(re.findall(light_pattern, line)[0][::-1].replace('.', '0').replace('#', '1'), base=2)
+        buttons = tuple(
+            sum((2 ** int(wire) for wire in schematic.split(','))) for schematic in re.findall(button_pattern, line)
+        )
+        machines.append((lights, buttons))
 
 total = 0
-visited = defaultdict()
-q = deque()
-for goal, buttons in machines:
-    start = [repeat(False, len(goal))]
+visited: dict[int, int] = {}
+q: deque[int] = deque()
+for lights, buttons in machines:
+    start = 0
     visited.clear()
     visited[start] = 1
     q.clear()
@@ -26,13 +27,12 @@ for goal, buttons in machines:
         curr = q.popleft()
         depth = visited[curr]
         for button in buttons:
-            for toggle in button:
-                curr[toggle] = not curr[toggle]
-            if curr == goal:
+            after_button = curr ^ button
+            if after_button == lights:
                 found = True
                 total += depth
                 break
-            if not visited[curr]:
-                q.append(curr)
-                visited[curr] = depth + 1
-    print(goal, total)
+            if after_button not in visited:
+                q.append(after_button)
+                visited[after_button] = depth + 1
+print(total)
