@@ -3,7 +3,7 @@ from functools import cache
 from itertools import combinations, cycle, pairwise
 from operator import itemgetter
 
-with open(('input.txt', 'test.txt', 'custom_test1.txt', 'custom_test2.txt')[2], 'r', encoding='utf-8') as file:
+with open(('input.txt', 'test.txt', 'custom_test1.txt', 'custom_test2.txt')[0], 'r', encoding='utf-8') as file:
     points = [(int(x), int(y)) for x, y in (line.split(',') for line in file)]
 
 points_dist = {
@@ -31,20 +31,21 @@ for p1, p2 in pairwise(cycling_points):
 
 @cache
 def check_inside(p1: tuple, p2: tuple) -> bool:
-    print(f'inside checking {p1} to {p2}')
+    # print(f'inside checking {p1} to {p2}')
     collisions = 0
     y_check = p1[1] + 0.5
     for i in range(x_min - 1, p1[0] + 1):
-        print(i)
+        # print(i)
         if i in v_walls:
-            print(f'i is in v_wall: {v_walls[i]}. We are checking y={y_check}')
+            # print(f'i is in v_wall: {v_walls[i]}. We are checking y={y_check}')
             for rng in v_walls[i]:
                 if rng[0] <= y_check <= rng[1]:
-                    print('this is a collision')
+                    # print('this is a collision')
                     collisions += 1
                 else:
-                    print('this is not a collision')
-    print(f'There are {collisions} collisions, returning {collisions % 2 != 0}')
+                    pass
+                    # print('this is not a collision')
+    # print(f'There are {collisions} collisions, returning {collisions % 2 != 0}')
     return collisions % 2 != 0
 
 
@@ -68,7 +69,7 @@ def v_partition(p1: tuple, p2: tuple) -> bool:
 
 
 for p1, p2 in far_points:
-    print(f'\n\nRECTANGLE: {p1} to {p2}, area: {far_points[(p1, p2)]}\n\n')
+    # print(f'\n\nRECTANGLE: {p1} to {p2}, area: {far_points[(p1, p2)]}\n\n')
     if h_partition(p1, p2) and v_partition(p1, p2):
         print(p1, p2, f'area: {far_points[(p1, p2)]}')
         break
