@@ -1,9 +1,20 @@
 from collections import defaultdict
-from functools import cache
 from itertools import combinations, cycle, pairwise
 from operator import itemgetter
 
-with open(('input.txt', 'test.txt', 'custom_test1.txt', 'custom_test2.txt')[0], 'r', encoding='utf-8') as file:
+with open(
+    (
+        'input.txt',
+        'test.txt',
+        'M.txt',
+        'Mr.txt',
+        'M_.txt',
+        'M_r.txt',
+        '25_small.txt',
+    )[0],
+    'r',
+    encoding='utf-8',
+) as file:
     points = [(int(x), int(y)) for x, y in (line.split(',') for line in file)]
 
 points_dist = {
@@ -29,47 +40,78 @@ for p1, p2 in pairwise(cycling_points):
         break
 
 
-@cache
-def check_inside(p1: tuple, p2: tuple) -> bool:
-    # print(f'inside checking {p1} to {p2}')
-    collisions = 0
-    y_check = p1[1] + 0.5
-    for i in range(x_min - 1, p1[0] + 1):
-        # print(i)
+def check_inside(point: tuple) -> bool:
+    u_collisions = 0
+    d_collisions = 0
+    for i in range(x_min - 1, point[0] + 1):
         if i in v_walls:
-            # print(f'i is in v_wall: {v_walls[i]}. We are checking y={y_check}')
             for rng in v_walls[i]:
-                if rng[0] <= y_check <= rng[1]:
-                    # print('this is a collision')
-                    collisions += 1
+                if rng[0] <= point[1] + 0.5 <= rng[1]:
+                    d_collisions += 1
+                if rng[0] <= point[1] - 0.5 <= rng[1]:
+                    u_collisions += 1
+    if u_collisions % 2 == 0 and d_collisions % 2 == 0:
+        u_collisions = 0
+        d_collisions = 0
+        for i in range(point[0], x_max + 1):
+            if i in v_walls:
+                for rng in v_walls[i]:
+                    if rng[0] <= point[1] + 0.5 <= rng[1]:
+                        d_collisions += 1
+                    if rng[0] <= point[1] - 0.5 <= rng[1]:
+                        u_collisions += 1
+
+    return u_collisions % 2 != 0 or d_collisions % 2 != 0
+
+
+def check_gaps(p1: tuple, p2: tuple) -> bool:
+    if p2[0] - p1[0] < p2[1] - p1[1]:    
+        for x in range(p1[0], p2[0] + 1):
+            in_v_wall = False
+            in_valid_gap = False
+            for y in range(p1[1], p2[1] + 1):
+                if y in h_walls:
+                    if any((rng[0] <= x <= rng[1] for rng in h_walls[y])):
+                        in_v_wall = False
+                        in_valid_gap = False
+                        continue
+                if in_v_wall or in_valid_gap:
+                    continue
+                if x in v_walls:
+                    if any((rng[0] <= y <= rng[1] for rng in v_walls[x])):
+                        in_v_wall = True
+                        continue
+                if check_inside((x, y)):
+                    in_valid_gap = True
                 else:
-                    pass
-                    # print('this is not a collision')
-    # print(f'There are {collisions} collisions, returning {collisions % 2 != 0}')
-    return collisions % 2 != 0
-
-
-def h_partition(p1: tuple, p2: tuple) -> bool:
-    for x in range(p1[0] + 1, p2[0]):
-        if x in v_walls:
-            for rng in v_walls[x]:
-                if rng[0] <= p1[1] <= rng[1] or rng[0] <= p2[1] <= rng[1]:
-                    return h_partition((x, p1[1]), p2) and v_partition(p1, (x, p2[1]))
-    return check_inside(p1, p2)
-
-
-def v_partition(p1: tuple, p2: tuple) -> bool:
-    # print(f'v_partitioning {p1} to {p2}')
-    for y in range(p1[1] + 1, p2[1]):
-        if y in h_walls:
-            for rng in h_walls[y]:
-                if rng[0] <= p1[0] <= rng[1] or rng[0] <= p2[0] <= rng[1]:
-                    return v_partition((p1[0], y), p2) and h_partition(p1, (p1[0], y))
-    return check_inside(p1, p2)
+                    return False
+    else:
+        for y in range(p1[1], p2[1] + 1):
+            in_h_wall = False
+            in_valid_gap = False
+            for x in range(p1[0], p2[0] + 1):
+                if x in v_walls:
+                    if any((rng[0] <= y <= rng[1] for rng in v_walls[x])):
+                        in_h_wall = False
+                        in_valid_gap = False
+                        continue
+                if in_h_wall or in_valid_gap:
+                    continue
+                if y in h_walls:
+                    if any((rng[0] <= x <= rng[1] for rng in h_walls[y])):
+                        in_h_wall = True
+                        continue
+                if check_inside((x, y)):
+                    in_valid_gap = True
+                else:
+                    return False
+    return True
 
 
 for p1, p2 in far_points:
-    # print(f'\n\nRECTANGLE: {p1} to {p2}, area: {far_points[(p1, p2)]}\n\n')
-    if h_partition(p1, p2) and v_partition(p1, p2):
-        print(p1, p2, f'area: {far_points[(p1, p2)]}')
-        break
+    if not check_gaps(p1, p2):
+        continue
+    print(p1, p2)
+    print(points_dist[(p1, p2)])
+    break
+
