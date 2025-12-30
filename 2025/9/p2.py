@@ -65,46 +65,85 @@ def check_inside(point: tuple) -> bool:
 
 
 def check_gaps(p1: tuple, p2: tuple) -> bool:
-    if p2[0] - p1[0] < p2[1] - p1[1]:    
-        for x in range(p1[0], p2[0] + 1):
-            in_v_wall = False
-            in_valid_gap = False
-            for y in range(p1[1], p2[1] + 1):
-                if y in h_walls:
-                    if any((rng[0] <= x <= rng[1] for rng in h_walls[y])):
-                        in_v_wall = False
-                        in_valid_gap = False
-                        continue
-                if in_v_wall or in_valid_gap:
-                    continue
-                if x in v_walls:
-                    if any((rng[0] <= y <= rng[1] for rng in v_walls[x])):
-                        in_v_wall = True
-                        continue
-                if check_inside((x, y)):
-                    in_valid_gap = True
-                else:
-                    return False
-    else:
+    for x in (p1[0], p1[0] + 1, p2[0] - 1, p2[0]):
+        in_v_wall = False
+        in_valid_gap = False
         for y in range(p1[1], p2[1] + 1):
-            in_h_wall = False
-            in_valid_gap = False
-            for x in range(p1[0], p2[0] + 1):
-                if x in v_walls:
-                    if any((rng[0] <= y <= rng[1] for rng in v_walls[x])):
-                        in_h_wall = False
-                        in_valid_gap = False
-                        continue
-                if in_h_wall or in_valid_gap:
+            if y in h_walls:
+                if any((rng[0] <= x <= rng[1] for rng in h_walls[y])):
+                    in_v_wall = False
+                    in_valid_gap = False
                     continue
-                if y in h_walls:
-                    if any((rng[0] <= x <= rng[1] for rng in h_walls[y])):
-                        in_h_wall = True
-                        continue
-                if check_inside((x, y)):
-                    in_valid_gap = True
-                else:
-                    return False
+            if in_v_wall or in_valid_gap:
+                continue
+            if x in v_walls:
+                if any((rng[0] <= y <= rng[1] for rng in v_walls[x])):
+                    in_v_wall = True
+                    continue
+            if check_inside((x, y)):
+                in_valid_gap = True
+            else:
+                return False
+    for y in (p1[1], p1[1] + 1, p2[1] - 1, p2[1]):
+        in_h_wall = False
+        in_valid_gap = False
+        for x in range(p1[0], p2[0] + 1):
+            if x in v_walls:
+                if any((rng[0] <= y <= rng[1] for rng in v_walls[x])):
+                    in_h_wall = False
+                    in_valid_gap = False
+                    continue
+            if in_h_wall or in_valid_gap:
+                continue
+            if y in h_walls:
+                if any((rng[0] <= x <= rng[1] for rng in h_walls[y])):
+                    in_h_wall = True
+                    continue
+            if check_inside((x, y)):
+                in_valid_gap = True
+            else:
+                return False
+    return True
+    # if p2[0] - p1[0] < p2[1] - p1[1]:    
+    #     for x in range(p1[0], p2[0] + 1):
+    #         in_v_wall = False
+    #         in_valid_gap = False
+    #         for y in range(p1[1], p2[1] + 1):
+    #             if y in h_walls:
+    #                 if any((rng[0] <= x <= rng[1] for rng in h_walls[y])):
+    #                     in_v_wall = False
+    #                     in_valid_gap = False
+    #                     continue
+    #             if in_v_wall or in_valid_gap:
+    #                 continue
+    #             if x in v_walls:
+    #                 if any((rng[0] <= y <= rng[1] for rng in v_walls[x])):
+    #                     in_v_wall = True
+    #                     continue
+    #             if check_inside((x, y)):
+    #                 in_valid_gap = True
+    #             else:
+    #                 return False
+    # else:
+    #     for y in range(p1[1], p2[1] + 1):
+    #         in_h_wall = False
+    #         in_valid_gap = False
+    #         for x in range(p1[0], p2[0] + 1):
+    #             if x in v_walls:
+    #                 if any((rng[0] <= y <= rng[1] for rng in v_walls[x])):
+    #                     in_h_wall = False
+    #                     in_valid_gap = False
+    #                     continue
+    #             if in_h_wall or in_valid_gap:
+    #                 continue
+    #             if y in h_walls:
+    #                 if any((rng[0] <= x <= rng[1] for rng in h_walls[y])):
+    #                     in_h_wall = True
+    #                     continue
+    #             if check_inside((x, y)):
+    #                 in_valid_gap = True
+    #             else:
+    #                 return False
     return True
 
 
